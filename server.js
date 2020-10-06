@@ -20,7 +20,7 @@ app.post('/',function(req,res){
     let url='https://api.coindesk.com/v1/bpi/currentprice.json';
     
     let currency=req.body.currency;
-    //console.log(currency);});
+    
 
     axios.get(url)
     .then(function(response){
@@ -37,11 +37,7 @@ app.post('/',function(req,res){
             code=response.data.bpi.USD.code;   
         }
         let disclaimer=response.data.disclaimer;
-        //res.write(`<p>${rate} ${code}</p>`);
         
-        //res.write(`<p>${disclaimer}</p>`);
-        //res.write(`<p>${num1}</p>`);
-        //res.send();
         let result=num1*rate;
         res.render(`index.ejs`,{rez: result, code: code });
         console.log(response.data);
