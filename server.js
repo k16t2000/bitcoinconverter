@@ -3,39 +3,52 @@
 const express=require('express');
 const bodyParser=require('body-parser');
 const axios=require('axios');
+const ejs=require('ejs');
+
 const app=express();
 
 app.use(bodyParser.urlencoded({extended:true}));
 
-app.get('/', (req,res)=>{
-    res.sendFile(__dirname+'/index.html');//dirname is path to file
+app.set("view engine", ejs);
+
+app.get('/', function(req, res){
+    res.render("index.ejs", {rez: "", code: ""});
 });
 
-app.post('/',(req,res)=>{
-    let url='https://api.coindesk.com/v1/bpi/currentprice/eur.json';
+
+app.post('/',function(req,res){
+    let url='https://api.coindesk.com/v1/bpi/currentprice.json';
+    
     let currency=req.body.currency;
-    console.log(currency);//v console pokazet valutu, kot vibrala v brauzere
+    //console.log(currency);});
+
     axios.get(url)
     .then(function(response){
         let rate;
         let code;
+        let num1=Number(req.body.num);
+        
         if(currency==='EUR'){
-            rate=response.data.bpi.EUR.rate;
-            code=response.data.bpi.EUR.code;
+            rate=response.data.bpi.EUR.rate_float;
+            code=response.data.bpi.EUR.code; 
+
         }else{
-            rate=response.data.bpi.USD.rate;
-            code=response.data.bpi.USD.code;
+            rate=response.data.bpi.USD.rate_float;
+            code=response.data.bpi.USD.code;   
         }
         let disclaimer=response.data.disclaimer;
-        res.write(`<p>${rate} ${code}</p>`);
-        res.write(`<p>${disclaimer}</p>`);
-        res.send();
-
+        //res.write(`<p>${rate} ${code}</p>`);
+        
+        //res.write(`<p>${disclaimer}</p>`);
+        //res.write(`<p>${num1}</p>`);
+        //res.send();
+        let result=num1*rate;
+        res.render(`index.ejs`,{rez: result, code: code });
+        console.log(response.data);
     })
     .catch(function(error){
         console.log(error);
     });
-
 
 });
 
