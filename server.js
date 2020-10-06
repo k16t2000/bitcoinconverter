@@ -51,7 +51,7 @@ app.post('/',function(req,res){
     });
 
 });
-
-app.listen(3000,()=>{
+//your server will start on both localhost and the heroku servers
+app.listen(process.env.PORT || 3000,()=>{
     console.log('Server is running on port 3000.');
 });
